@@ -5,7 +5,7 @@ import { initRequestContext, getLogger } from "@myorg/logger";
 import { AppError, withErrorHandler } from "@myorg/api-utils";
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT ?? 3001;
 
 app.use(cors());
 
@@ -14,6 +14,10 @@ app.use((req, res, next) => {
   initRequestContext(requestId);
   res.setHeader("x-request-id", requestId);
   next();
+});
+
+app.get("/health", (_req, res) => {
+  res.json({ status: "ok" });
 });
 
 const WORDS = ["sunshine", "butterfly", "mountain", "ocean", "galaxy", "thunder", "whisper", "crystal"];
