@@ -12,8 +12,8 @@ app.use(cors());
 app.use((req, res, next) => {
   const requestId = uuidv4();
   initRequestContext(requestId);
-  initConfigManager();
   res.setHeader("x-request-id", requestId);
+  initConfigManager();
   next();
 });
 

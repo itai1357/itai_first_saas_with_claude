@@ -1,11 +1,12 @@
+import { AsyncLocalStorage } from "async_hooks";
 import { ConfigGetOptions } from "./types";
 
 export abstract class BaseConfigManager {
-  protected abstract _get(key: string): string | undefined;
+  protected abstract _get<T = string>(key: string): T | undefined;
   abstract init(): void;
 
-  get(key: string, options?: ConfigGetOptions): string | undefined {
-    const value = this._get(key);
+  get<T = string>(key: string, options?: ConfigGetOptions): T | undefined {
+    const value = this._get<T>(key);
     if (options?.required && (value === null || value === undefined)) {
       throw new Error(`Missing required config key: "${key}"`);
     }
@@ -14,23 +15,40 @@ export abstract class BaseConfigManager {
 }
 
 class EnvVarConfigManager extends BaseConfigManager {
-  protected _get(key: string): string | undefined {
-    return process.env[key];
+  protected _get<T = string>(key: string): T | undefined {
+    return process.env[key] as T | undefined;
   }
 
   init(): void {}
 }
 
-let instance: BaseConfigManager | null = null;
+class ConfigManagerInstance {
+  private static asyncStorage = new AsyncLocalStorage<BaseConfigManager>();
+
+  private static _getAndInitNew(): BaseConfigManager {
+    const manager = new EnvVarConfigManager();
+    manager.init();
+    return manager;
+  }
+
+  public static get(): BaseConfigManager {
+    const store = this.asyncStorage.getStore();
+    if (!store) {
+      throw new Error("ConfigManager not initialized. Call initConfigManager() before accessing configuration.");
+    }
+    return store;
+  }
+
+  public static init(): void {
+    const manager = ConfigManagerInstance._getAndInitNew();
+    this.asyncStorage.enterWith(manager);
+  }
+}
 
 export function getConfigManager(): BaseConfigManager {
-  if (!instance) {
-    instance = new EnvVarConfigManager();
-  }
-  return instance;
+  return ConfigManagerInstance.get();
 }
 
 export function initConfigManager(): void {
-  const manager = getConfigManager();
-  manager.init();
+  ConfigManagerInstance.init();
 }
