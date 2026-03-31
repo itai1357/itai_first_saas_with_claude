@@ -6,11 +6,12 @@ module.exports = async () => {
   const backendUrl = getConfigManager().get("BACKEND_URL") || "http://localhost:3001";
 
   return {
-    async rewrites() {
+    async redirects() {
       return [
         {
           source: "/api/:path*",
           destination: `${backendUrl}/:path*`,
+          permanent: false,
         },
       ];
     },
