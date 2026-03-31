@@ -1,3 +1,3 @@
-export interface IConfigProvider {
-  get(key: string): Promise<string | undefined>;
+export interface ConfigGetOptions {
+  required?: boolean;
 }
