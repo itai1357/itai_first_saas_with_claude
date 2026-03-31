@@ -3,7 +3,7 @@ import cors from "cors";
 import { v4 as uuidv4 } from "uuid";
 import { initRequestContext, getLogger } from "@myorg/logger";
 import { AppError, withErrorHandler } from "@myorg/api-utils";
-import { initConfigContext, getConfig, ConfigManager, EnvConfigProvider } from "@myorg/config-manager";
+import { initConfigManager, getConfigManager } from "@myorg/config-manager";
 
 const app = express();
 
@@ -12,7 +12,7 @@ app.use(cors());
 app.use((req, res, next) => {
   const requestId = uuidv4();
   initRequestContext(requestId);
-  initConfigContext(new EnvConfigProvider());
+  initConfigManager();
   res.setHeader("x-request-id", requestId);
   next();
 });
@@ -52,8 +52,9 @@ app.get(
 );
 
 async function main() {
-  const config = new ConfigManager(new EnvConfigProvider());
-  const port = (await config.get("PORT")) ?? "3001";
+  initConfigManager();
+  const config = getConfigManager();
+  const port = config.get("PORT") ?? "3001";
 
   app.listen(port, () => {
     console.log(`Backend running on http://localhost:${port}`);

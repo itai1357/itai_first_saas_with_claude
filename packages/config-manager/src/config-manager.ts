@@ -1,21 +1,36 @@
-import { IConfigProvider } from "./types";
+import { ConfigGetOptions } from "./types";
 
-export class ConfigManager {
-  private provider: IConfigProvider;
+export abstract class BaseConfigManager {
+  protected abstract _get(key: string): string | undefined;
+  abstract init(): void;
 
-  constructor(provider: IConfigProvider) {
-    this.provider = provider;
-  }
-
-  async get(key: string): Promise<string | undefined> {
-    return this.provider.get(key);
-  }
-
-  async getOrThrow(key: string): Promise<string> {
-    const value = await this.provider.get(key);
-    if (value === undefined) {
+  get(key: string, options?: ConfigGetOptions): string | undefined {
+    const value = this._get(key);
+    if (options?.required && (value === null || value === undefined)) {
       throw new Error(`Missing required config key: "${key}"`);
     }
     return value;
   }
+}
+
+class EnvVarConfigManager extends BaseConfigManager {
+  protected _get(key: string): string | undefined {
+    return process.env[key];
+  }
+
+  init(): void {}
+}
+
+let instance: BaseConfigManager | null = null;
+
+export function getConfigManager(): BaseConfigManager {
+  if (!instance) {
+    instance = new EnvVarConfigManager();
+  }
+  return instance;
+}
+
+export function initConfigManager(): void {
+  const manager = getConfigManager();
+  manager.init();
 }
