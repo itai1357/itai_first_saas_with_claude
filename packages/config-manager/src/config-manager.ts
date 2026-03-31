@@ -7,7 +7,7 @@ export abstract class BaseConfigManager {
 
   get<T = string>(key: string, options?: ConfigGetOptions): T | undefined {
     const value = this._get<T>(key);
-    if (options?.required && (value === null || value === undefined)) {
+    if (options?.required && !value) {
       throw new Error(`Missing required config key: "${key}"`);
     }
     return value;
