@@ -8,6 +8,7 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
+    "@myorg/config-manager": "workspace:*",
     "@myorg/logger": "workspace:*",
     "@myorg/api-utils": "workspace:*",
     "express": "^4.21.0",

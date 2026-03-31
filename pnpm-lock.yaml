@@ -13,6 +13,9 @@ importers:
       '@myorg/api-utils':
         specifier: workspace:*
         version: link:../../packages/api-utils
+      '@myorg/config-manager':
+        specifier: workspace:*
+        version: link:../../packages/config-manager
       '@myorg/logger':
         specifier: workspace:*
         version: link:../../packages/logger
@@ -44,6 +47,9 @@ importers:
 
   apps/frontend:
     dependencies:
+      '@myorg/config-manager':
+        specifier: workspace:*
+        version: link:../../packages/config-manager
       next:
         specifier: ^15.1.0
         version: 15.5.14(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -73,6 +79,15 @@ importers:
       '@types/express':
         specifier: ^5.0.0
         version: 5.0.6
+      typescript:
+        specifier: ^5.7.0
+        version: 5.9.3
+
+  packages/config-manager:
+    devDependencies:
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.19.15
       typescript:
         specifier: ^5.7.0
         version: 5.9.3
