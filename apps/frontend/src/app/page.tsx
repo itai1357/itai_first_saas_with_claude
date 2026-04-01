@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useAuth, LoginButton, LogoutButton } from "@/auth";
 
 interface ApiResult {
   type: "success" | "error";
@@ -11,6 +12,7 @@ interface ApiResult {
 }
 
 export default function Home() {
+  const { isAuthenticated, user } = useAuth();
   const [result, setResult] = useState<ApiResult | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -40,9 +42,25 @@ export default function Home() {
     }
   }
 
+  if (!isAuthenticated) {
+    return (
+      <div className="container">
+        <h1>SaaS Starter</h1>
+        <p>Please sign in to continue.</p>
+        <LoginButton />
+      </div>
+    );
+  }
+
   return (
     <div className="container">
       <h1>API Tester</h1>
+      <div style={{ marginBottom: "1rem" }}>
+        Signed in as: <strong>{user?.email}</strong>
+        <span style={{ marginLeft: "1rem" }}>
+          <LogoutButton />
+        </span>
+      </div>
       <div className="buttons">
         <button className="btn-success" disabled={loading} onClick={() => callApi("success")}>
           Success
@@ -60,9 +78,9 @@ export default function Home() {
         {!loading && result?.type === "success" && `Data: ${result.data}`}
         {!loading && result?.type === "error" && (
           <>
-            {result.errorCode && `Error: ${result.errorCode}\n`}
-            {`Message: ${result.message}`}
-            {result.requestId && `\nRequest ID: ${result.requestId}`}
+            {result.errorCode && <div>Error: {result.errorCode}</div>}
+            <div>Message: {result.message}</div>
+            {result.requestId && <div>Request ID: {result.requestId}</div>}
           </>
         )}
       </div>
