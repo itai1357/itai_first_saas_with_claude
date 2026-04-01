@@ -1,9 +1,10 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import { v4 as uuidv4 } from "uuid";
 import { initRequestContext, getLogger } from "@myorg/logger";
-import { AppError, withErrorHandler } from "@myorg/api-utils";
+import { AppError, withErrorHandler, sendErrorResponse } from "@myorg/api-utils";
 import { initConfigManager, getConfigManager } from "@myorg/config-manager";
+import { requireAuth, getAuthUser } from "./auth";
 
 const app = express();
 
@@ -44,12 +45,18 @@ app.get(
 
 app.get(
   "/test/protected",
+  requireAuth,
   withErrorHandler(async (req, res) => {
     const logger = getLogger();
-    logger.info("Protected endpoint hit");
-    throw new AppError(403, "FORBIDDEN", "You are not allowed");
+    const user = getAuthUser(req);
+    logger.info("Protected endpoint accessed", { userId: user.id });
+    res.json({ data: `Hello, user ${user.id}` });
   })
 );
+
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+  sendErrorResponse(err, res);
+});
 
 async function main() {
   initConfigManager();
