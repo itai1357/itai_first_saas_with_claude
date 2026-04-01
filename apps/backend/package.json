@@ -10,7 +10,9 @@
   "dependencies": {
     "@myorg/config-manager": "workspace:*",
     "@myorg/logger": "workspace:*",
+    "@myorg/auth": "workspace:*",
     "@myorg/api-utils": "workspace:*",
+    "@clerk/backend": "^1.0.0",
     "express": "^4.21.0",
     "cors": "^2.8.5",
     "uuid": "^11.0.0"
