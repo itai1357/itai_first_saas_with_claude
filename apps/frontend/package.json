@@ -8,6 +8,8 @@
     "start": "next start --port 3000"
   },
   "dependencies": {
+    "@clerk/nextjs": "^7.0.8",
+    "@myorg/auth": "workspace:*",
     "@myorg/config-manager": "workspace:*",
     "next": "^15.1.0",
     "react": "^19.0.0",
