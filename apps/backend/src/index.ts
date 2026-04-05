@@ -26,6 +26,7 @@ const WORDS = ["sunshine", "butterfly", "mountain", "ocean", "galaxy", "thunder"
 
 app.get(
   "/test/success",
+  requireAuth,
   withErrorHandler(async (req, res) => {
     const logger = getLogger();
     const word = WORDS[Math.floor(Math.random() * WORDS.length)];
@@ -36,6 +37,7 @@ app.get(
 
 app.get(
   "/test/error",
+  requireAuth,
   withErrorHandler(async (req, res) => {
     const logger = getLogger();
     logger.info("Error endpoint hit");
