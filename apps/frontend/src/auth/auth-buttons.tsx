@@ -1,13 +1,9 @@
 "use client";
 
-import { SignInButton, SignOutButton } from "@clerk/nextjs";
+import { SignIn as ClerkSignIn, SignOutButton } from "@clerk/nextjs";
 
-export function LoginButton() {
-  return (
-    <SignInButton mode="modal">
-      <button className="btn-success">Sign In</button>
-    </SignInButton>
-  );
+export function SignInForm() {
+  return <ClerkSignIn routing="hash" />;
 }
 
 export function LogoutButton() {

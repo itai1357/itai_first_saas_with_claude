@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useAuth, LoginButton, LogoutButton } from "@/auth";
+import { useAuth, SignInForm, LogoutButton } from "@/auth";
 
 interface ApiResult {
   type: "success" | "error";
@@ -12,7 +12,7 @@ interface ApiResult {
 }
 
 export default function Home() {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, getToken } = useAuth();
   const [result, setResult] = useState<ApiResult | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -20,7 +20,10 @@ export default function Home() {
     setLoading(true);
     setResult(null);
     try {
-      const res = await fetch(`/api/test/${endpoint}`);
+      const token = await getToken();
+      const res = await fetch(`/api/test/${endpoint}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const json = await res.json();
       if (res.ok) {
         setResult({ type: "success", data: json.data });
@@ -46,8 +49,7 @@ export default function Home() {
     return (
       <div className="container">
         <h1>SaaS Starter</h1>
-        <p>Please sign in to continue.</p>
-        <LoginButton />
+        <SignInForm />
       </div>
     );
   }
