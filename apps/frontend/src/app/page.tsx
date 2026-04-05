@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { SignIn } from "@clerk/nextjs";
-import { useAuth, LogoutButton } from "@/auth";
+import { useAuth, SignInForm, LogoutButton } from "@/auth";
 
 interface ApiResult {
   type: "success" | "error";
@@ -50,7 +49,7 @@ export default function Home() {
     return (
       <div className="container">
         <h1>SaaS Starter</h1>
-        <SignIn routing="hash" />
+        <SignInForm />
       </div>
     );
   }

@@ -1,6 +1,10 @@
 "use client";
 
-import { SignOutButton } from "@clerk/nextjs";
+import { SignIn as ClerkSignIn, SignOutButton } from "@clerk/nextjs";
+
+export function SignInForm() {
+  return <ClerkSignIn routing="hash" />;
+}
 
 export function LogoutButton() {
   return (
